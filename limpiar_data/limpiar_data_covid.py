@@ -23,11 +23,11 @@ import unidecode
 
 dateparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d')
 
-casos_df = pd.read_csv('data/DATOSABIERTOS_SISCOVID.csv',
+casos_df = pd.read_csv('../data/DATOSABIERTOS_SISCOVID.csv',
                        parse_dates=['FECHA_NACIMIENTO', 'FECHA_PRUEBA'],
                        encoding = "latin")
 
-ubigeo_df = pd.read_csv('data/ubigeo.csv', dtype={'ubigeo': 'string'})
+ubigeo_df = pd.read_csv('../data/ubigeo.csv', dtype={'ubigeo': 'string'})
 
 # Cambiando mayusculas
 casos_df.columns = [col.lower() for col in casos_df.columns]
@@ -121,7 +121,7 @@ comp_fecha_prueba = dedup[(dedup.tipo_prueba_x.notnull()) &(dedup.fecha_prueba_x
 # Para limpiar casos de dobles con misma id, nos quedamos con
 # las observaciones que menos campos vacios tienen
 casos_df['num_vacios'] = casos_df.isnull().sum(axis=1)
-casos_df = casos_df.sort_values(by=['uuid', 'num_vacios', 'fecha_prueba'])
+casos_df = casos_df.sort_values(by=['uuid', 'num_vacios', 'fecha_prueba'], ascending=[True, True, False])
 casos_df = casos_df.groupby(['uuid'], as_index=False).first()
 casos_df = casos_df.drop(columns='num_vacios')
-casos_df.to_csv('data/data_limpia_datos_covid_2020_05_22.csv', index=False)
+casos_df.to_csv('../data/data_limpia_datos_covid_2020_05_22.csv', index=False)
