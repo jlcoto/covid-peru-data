@@ -12,6 +12,8 @@ Si deseas correr los scripts, sigue los siguientes pasos de instalación.
 
 Si solo deseas la data, puedes encontrarla en el folder `data/data_limpia_datos_covid_2020_05_22.csv`. Nota que a diferencia de la data original, la data límpia contiene una columna con el ubigeo de los distritos. Puedes usar esta información para cruzarla con otras bases de datos.
 
+También puedes acceder a la data usando el siguiente [link](https://www.kaggle.com/jlcoto/covidperu-datos-abiertos).
+
 ## Instrucciones para Pull Requests
 
 Si deseas hacer un PR, por favor, usa el file `.py`y no lo hagas directamente en el notebook. Te recomiendo que para eso uses [jupytext](https://jupytext.readthedocs.io/en/latest/introduction.html).
