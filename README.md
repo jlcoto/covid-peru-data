@@ -10,7 +10,7 @@ Si deseas correr los scripts, sigue los siguientes pasos de instalación.
 2. Instala anaconda. Instrucciones [aquí](https://docs.anaconda.com/anaconda/install/mac-os/)
 3. Crea un environment con todas las dependencias: `conda env create -f environment.yml`
 
-Si solo deseas la data, puedes encontrarla en el folder `data/data_limpia_datos_covid_2020_05_22.csv`
+Si solo deseas la data, puedes encontrarla en el folder `data/data_limpia_datos_covid_2020_05_22.csv`. Nota que a diferencia de la data original, la data límpia contiene una columna con el ubigeo de los distritos. Puedes usar esta información para cruzarla con otras bases de datos.
 
 ## Instrucciones para Pull Requests
 
