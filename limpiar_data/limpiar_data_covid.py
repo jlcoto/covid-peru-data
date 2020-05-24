@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.4.2
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: 'Python 3.7.7 64-bit (''covid-hackaton'': conda)'
 #     language: python
-#     name: python3
+#     name: python37764bitcovidhackatoncondad02ba9ce9daa416ca3a7ed66f38a2896
 # ---
 
 # +
@@ -22,16 +22,14 @@ import unidecode
 
 # -
 
-dateparse = lambda x: pd.datetime.strptime(x, "%Y-%m-%d")
-
 casos_df = pd.read_csv(
-    "./data/original/datos_abiertos_siscovid_2020_05_22.csv",
+    "../data/original/datos_abiertos_siscovid_2020_05_22.csv",
     parse_dates=["FECHA_NACIMIENTO", "FECHA_PRUEBA"],
     encoding="latin",
 )
 
 ubigeo_df = pd.read_csv(
-    "./data/original/ubigeo_distritos.csv", dtype={"ubigeo": "string"}
+    "../data/original/ubigeo_distritos.csv", dtype={"ubigeo": "string"}
 )
 
 # Cambiando mayusculas
@@ -187,13 +185,13 @@ casos_df = casos_df.sort_values(
 casos_df = casos_df.groupby(["uuid"], as_index=False).first()
 casos_df = casos_df.drop(columns="num_vacios")
 casos_df.to_csv(
-    "./data/limpia/data_limpia_datos_siscovid_2020_05_22.csv", index=False
+    "../data/limpia/data_limpia_datos_siscovid_2020_05_22.csv", index=False
 )
 
 # ### Nueva data 2020-05-24
 
 new_covid_data = pd.read_csv(
-    "./data/original/datos_abiertos_siscovid_2020_05_24.csv",
+    "../data/original/datos_abiertos_siscovid_2020_05_24.csv",
     parse_dates=["FECHA_RESULTADO"],
     encoding="latin",
     dtype={"EDAD": pd.Int64Dtype()},
@@ -258,7 +256,7 @@ for correccion in correcciones_distrito:
     ] = data_correccion.cambio
 
 
-correcciones_provincia = [("Ica", "Nazca", "Nasca"),]
+correcciones_provincia = [("Ica", "Nazca", "Nasca")]
 
 for correccion in correcciones_provincia:
     data_correccion = Pcorreccion(*correccion)
@@ -268,11 +266,10 @@ for correccion in correcciones_provincia:
         "provincia",
     ] = data_correccion.cambio
 
-# Lima Region usar departamento Lima
-new_covid_data.loc[
-    (new_covid_data.departamento == "Lima Region"),
-    "departamento",
-] = "Lima"
+# Convertir data Region a Lima
+new_covid_data.loc[new_covid_data.departamento == 'Lima Region', 'departamento'] = 'Lima'
+
+# -
 
 # Ayuda para unir localiazaciones con ubigeo
 localizacion = (
@@ -291,7 +288,5 @@ merge_ubigeos = localizacion.merge(
 )
 
 new_covid_data.to_csv(
-    "./data/data_limpia_datos_covid_2020_05_24.csv", index=False
+    "../data/limpia/data_limpia_datos_siscovid_2020_05_24.csv", index=False
 )
-
-
