@@ -258,7 +258,7 @@ for correccion in correcciones_distrito:
     ] = data_correccion.cambio
 
 
-correcciones_provincia = [("Ica", "Nazca", "Nasca")]
+correcciones_provincia = [("Ica", "Nazca", "Nasca"),]
 
 for correccion in correcciones_provincia:
     data_correccion = Pcorreccion(*correccion)
@@ -268,7 +268,11 @@ for correccion in correcciones_provincia:
         "provincia",
     ] = data_correccion.cambio
 
-# -
+# Lima Region usar departamento Lima
+new_covid_data.loc[
+    (new_covid_data.departamento == "Lima Region"),
+    "departamento",
+] = "Lima"
 
 # Ayuda para unir localiazaciones con ubigeo
 localizacion = (
