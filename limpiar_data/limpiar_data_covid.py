@@ -25,13 +25,13 @@ import unidecode
 dateparse = lambda x: pd.datetime.strptime(x, "%Y-%m-%d")
 
 casos_df = pd.read_csv(
-    "../data/original/datos_abiertos_siscovid_22_05_2020.csv",
+    "./data/original/datos_abiertos_siscovid_2020_05_22.csv",
     parse_dates=["FECHA_NACIMIENTO", "FECHA_PRUEBA"],
     encoding="latin",
 )
 
 ubigeo_df = pd.read_csv(
-    "../data/original/ubigeo.csv", dtype={"ubigeo": "string"}
+    "./data/original/ubigeo_distritos.csv", dtype={"ubigeo": "string"}
 )
 
 # Cambiando mayusculas
@@ -187,13 +187,13 @@ casos_df = casos_df.sort_values(
 casos_df = casos_df.groupby(["uuid"], as_index=False).first()
 casos_df = casos_df.drop(columns="num_vacios")
 casos_df.to_csv(
-    "../data/limpia/data_limpia_datos_siscovid_2020_05_22.csv", index=False
+    "./data/limpia/data_limpia_datos_siscovid_2020_05_22.csv", index=False
 )
 
 # ### Nueva data 2020-05-24
 
 new_covid_data = pd.read_csv(
-    "../data/original/datos_abiertos_siscovid_24_05_2020.csv",
+    "./data/original/datos_abiertos_siscovid_2020_05_24.csv",
     parse_dates=["FECHA_RESULTADO"],
     encoding="latin",
     dtype={"EDAD": pd.Int64Dtype()},
@@ -287,7 +287,7 @@ merge_ubigeos = localizacion.merge(
 )
 
 new_covid_data.to_csv(
-    "../data/data_limpia_datos_covid_2020_05_24.csv", index=False
+    "./data/data_limpia_datos_covid_2020_05_24.csv", index=False
 )
 
 
