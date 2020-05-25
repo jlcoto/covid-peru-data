@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
@@ -267,7 +268,9 @@ for correccion in correcciones_provincia:
     ] = data_correccion.cambio
 
 # Convertir data Region a Lima
-new_covid_data.loc[new_covid_data.departamento == 'Lima Region', 'departamento'] = 'Lima'
+new_covid_data.loc[
+    new_covid_data.departamento == "Lima Region", "departamento"
+] = "Lima"
 
 # -
 
@@ -286,6 +289,30 @@ merge_ubigeos = localizacion.merge(
 merge_ubigeos = localizacion.merge(
     ubigeo_df, how="left", on=["departamento", "provincia", "distrito"]
 )
+
+
+# +
+# En algunos casos parece que los meses y dias se han introducido al revés
+def cambiar_a_mes_dia(columna):
+    return pd.to_datetime(columna.dt.strftime("%Y-%d-%m"), format="%Y-%m-%d")
+
+
+antes_primer_caso = new_covid_data.fecha_resultado < "2020-03-06"
+posteriores_fecha_data = new_covid_data.fecha_resultado > "2020-05-24"
+new_covid_data.loc[antes_primer_caso, "fecha_resultado"] = cambiar_a_mes_dia(
+    new_covid_data.loc[antes_primer_caso, "fecha_resultado"]
+)
+new_covid_data.loc[
+    posteriores_fecha_data, "fecha_resultado"
+] = cambiar_a_mes_dia(
+    new_covid_data.loc[posteriores_fecha_data, "fecha_resultado"]
+)
+new_covid_data = new_covid_data[
+    (data_24.fecha_resultado >= "2020-03-06")
+    | (data_24.fecha_resultado <= "2020-05-24")
+    | (data_24.fecha_resultado.isnull())
+]
+# -
 
 new_covid_data.to_csv(
     "../data/limpia/data_limpia_datos_siscovid_2020_05_24.csv", index=False
