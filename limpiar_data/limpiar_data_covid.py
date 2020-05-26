@@ -191,21 +191,21 @@ casos_df.to_csv(
 
 # ### Nueva data 2020-05-24
 
-new_covid_data = pd.read_csv(
+data_05_24 = pd.read_csv(
     "../data/original/datos_abiertos_siscovid_2020_05_24.csv",
     parse_dates=["FECHA_RESULTADO"],
     encoding="latin",
     dtype={"EDAD": pd.Int64Dtype()},
 )
-new_covid_data.columns = [col.lower() for col in new_covid_data.columns]
+data_05_24.columns = [col.lower() for col in data_05_24.columns]
 
 # Uniformizando minusculas y limpiando caracteres especiales
-new_covid_data[["departamento", "provincia", "distrito"]] = new_covid_data[
+data_05_24[["departamento", "provincia", "distrito"]] = data_05_24[
     ["departamento", "provincia", "distrito"]
 ].applymap(lambda x: unidecode.unidecode(x) if isinstance(x, str) else x)
-new_covid_data[
+data_05_24[
     ["sexo", "departamento", "provincia", "distrito"]
-] = new_covid_data[["sexo", "departamento", "provincia", "distrito"]].apply(
+] = data_05_24[["sexo", "departamento", "provincia", "distrito"]].apply(
     lambda x: x.str.title().str.strip()
 )
 
@@ -249,10 +249,10 @@ correcciones_distrito = [
 
 for correccion in correcciones_distrito:
     data_correccion = Dcorreccion(*correccion)
-    new_covid_data.loc[
-        (new_covid_data["departamento"] == data_correccion.departamento)
-        & (new_covid_data["provincia"] == data_correccion.provincia)
-        & (new_covid_data["distrito"] == data_correccion.distrito),
+    data_05_24.loc[
+        (data_05_24["departamento"] == data_correccion.departamento)
+        & (data_05_24["provincia"] == data_correccion.provincia)
+        & (data_05_24["distrito"] == data_correccion.distrito),
         "distrito",
     ] = data_correccion.cambio
 
@@ -261,22 +261,22 @@ correcciones_provincia = [("Ica", "Nazca", "Nasca")]
 
 for correccion in correcciones_provincia:
     data_correccion = Pcorreccion(*correccion)
-    new_covid_data.loc[
-        (new_covid_data["departamento"] == data_correccion.departamento)
-        & (new_covid_data["provincia"] == data_correccion.provincia),
+    data_05_24.loc[
+        (data_05_24["departamento"] == data_correccion.departamento)
+        & (data_05_24["provincia"] == data_correccion.provincia),
         "provincia",
     ] = data_correccion.cambio
 
 # Convertir data Region a Lima
-new_covid_data.loc[
-    new_covid_data.departamento == "Lima Region", "departamento"
+data_05_24.loc[
+    data_05_24.departamento == "Lima Region", "departamento"
 ] = "Lima"
 
 # -
 
 # Ayuda para unir localiazaciones con ubigeo
 localizacion = (
-    new_covid_data.groupby(
+    data_05_24.groupby(
         ["departamento", "provincia", "distrito"], as_index=False
     )
     .count()
@@ -286,34 +286,26 @@ merge_ubigeos = localizacion.merge(
     ubigeo_df, how="left", on=["departamento", "provincia", "distrito"]
 )
 
-merge_ubigeos = localizacion.merge(
+data_05_24 = data_05_24.merge(
     ubigeo_df, how="left", on=["departamento", "provincia", "distrito"]
 )
 
-
-# +
-# En algunos casos parece que los meses y dias se han introducido al revés
-def cambiar_a_mes_dia(columna):
-    return pd.to_datetime(columna.dt.strftime("%Y-%d-%m"), format="%Y-%m-%d")
-
-
-antes_primer_caso = new_covid_data.fecha_resultado < "2020-03-06"
-posteriores_fecha_data = new_covid_data.fecha_resultado > "2020-05-24"
-new_covid_data.loc[antes_primer_caso, "fecha_resultado"] = cambiar_a_mes_dia(
-    new_covid_data.loc[antes_primer_caso, "fecha_resultado"]
+antes_primer_caso = data_05_24.fecha_resultado < "2020-03-06"
+posteriores_fecha_data = data_05_24.fecha_resultado > "2020-05-24"
+data_05_24.loc[antes_primer_caso, "fecha_resultado"] = cambiar_a_mes_dia(
+    data_05_24.loc[antes_primer_caso, "fecha_resultado"]
 )
-new_covid_data.loc[
+data_05_24.loc[
     posteriores_fecha_data, "fecha_resultado"
 ] = cambiar_a_mes_dia(
-    new_covid_data.loc[posteriores_fecha_data, "fecha_resultado"]
+    data_05_24.loc[posteriores_fecha_data, "fecha_resultado"]
 )
-new_covid_data = new_covid_data[
-    (data_24.fecha_resultado >= "2020-03-06")
-    | (data_24.fecha_resultado <= "2020-05-24")
-    | (data_24.fecha_resultado.isnull())
+data_05_24 = data_05_24[
+    (data_05_24.fecha_resultado >= "2020-03-06")
+    | (data_05_24.fecha_resultado <= "2020-05-24")
+    | (data_05_24.fecha_resultado.isnull())
 ]
-# -
 
-new_covid_data.to_csv(
+data_05_24.to_csv(
     "../data/limpia/data_limpia_datos_siscovid_2020_05_24.csv", index=False
 )
